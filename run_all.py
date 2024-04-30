@@ -128,16 +128,17 @@ class RobotController:
                     self.turn_direction = 1
                 else:
                     self.turn_direction = -1
+                self.cmd_vel_pub.publish(self.twist)
             else:
                 # If the line is not detected, start turning in the last known direction
                 self.twist.linear.x = 0.0
                 self.twist.angular.z = 0.3 * self.turn_direction  # Turn left or right
-            self.cmd_vel_pub.publish(self.twist)
+                self.cmd_vel_pub.publish(self.twist)
 
     def laser_callback(self, msg):
         ranges = np.array(msg.ranges)
-        threshold_distance = 0.4
-        forward_range = 120  # Front range in degrees
+        threshold_distance = 0.25
+        forward_range = 120 # Front range in degrees
 
         if np.any(ranges < threshold_distance):
             min_index = np.argmin(ranges)
@@ -154,9 +155,7 @@ class RobotController:
                 print("OBSTACLE IN FRONT")
                 self.twist.linear.x = 0.0
                 self.twist.angular.z = 0.0
-                turn_start_time = rospy.Time.now()
-                while rospy.Time.now() - turn_start_time < rospy.Duration(10):  # Adjust duration as needed
-                    self.cmd_vel_pub.publish(self.twist)
+                self.cmd_vel_pub.publish(self.twist)
 
                 # Turn 180 degrees
                 self.twist.angular.z = 0.157  # Adjust angular velocity as needed
@@ -197,4 +196,3 @@ class RobotController:
 if __name__ == '__main__':
     rc = RobotController()
     rc.run()
-
