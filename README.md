@@ -47,7 +47,7 @@ pip install -r requirements.txt
 To run the project, use the following command within your ROS environment:
 
 ```bash
-rosrun robocop main.py
+rosrun robocop run_all.py
 ```
 
 This will start the robot's main logic and enable the line-following and object detection features.
